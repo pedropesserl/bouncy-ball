@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include "raylib.h"
 
 int main() {
@@ -9,19 +10,27 @@ int main() {
     InitWindow(screen_width, screen_height, "nbody");
     SetTargetFPS(60);
 
-    int ball_radius = 40;
-    Vector2 ball_position = {GetScreenWidth()/2.0f, (float)ball_radius};
+    float ball_radius = 40.0f;
+    float coeff_restitution = 1.0f;
+    Vector2 ball_position = {GetScreenWidth()/2.0f, ball_radius};
     Vector2 ball_speed = {0.0f, 0.0f};
     Vector2 ball_acceleration = {0.0f, 0.5f};
 
+    const float gravity = 9.8f;
+
     while (!WindowShouldClose()) {
-        if (ball_position.y >= GetScreenHeight() - ball_radius) {
-            ball_speed.y *= -1.0f;
-        }
         ball_position.x += ball_speed.x;
         ball_position.y += ball_speed.y;
-        ball_speed.x += ball_acceleration.x;
-        ball_speed.y += ball_acceleration.y;
+        ball_speed.x += ball_acceleration.x / 2;
+        ball_speed.y += ball_acceleration.y / 2;
+
+        if (ball_position.y >= GetScreenHeight() - ball_radius) {
+            ball_position.y = screen_height - ball_radius;
+            ball_speed.y *= -coeff_restitution;
+        }
+
+        ball_speed.x += ball_acceleration.x / 2;
+        ball_speed.y += ball_acceleration.y / 2;
 
         BeginDrawing();
         {
