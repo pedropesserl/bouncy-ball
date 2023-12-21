@@ -1,6 +1,10 @@
 #include <math.h>
 #include "raylib.h"
 
+float lerp(float a, float b, float t) {
+    return (1 - t)*a + t*b;
+}
+
 float get_pixel_size(int monitor) {
     int monitor_width = GetMonitorWidth(monitor);
     int monitor_physical_width = GetMonitorPhysicalWidth(monitor);
