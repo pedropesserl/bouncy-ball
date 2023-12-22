@@ -1,5 +1,5 @@
 CC = gcc
-PROGRAM = nbody
+PROGRAM = bball
 
 CFLAGS = -Iinclude -Wall -Wextra -g
 LFLAGS = -lm -lraylib
