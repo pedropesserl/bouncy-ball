@@ -9,13 +9,15 @@ int main() {
 
     InitWindow(screen_width, screen_height, "nbody");
     /* SetWindowState(FLAG_VSYNC_HINT); */
-    SetTargetFPS(20);
+    SetTargetFPS(60);
 
     const float gravity = 9.8f;
 
     float ball_radius = 30.0f;
     float coeff_restitution = 1.0f;
-    Vector2 ball_position = {GetScreenWidth()/2.0f, GetScreenHeight()/2.0f};
+    float initial_height = GetScreenHeight()/2.0f;
+    float displacement = GetScreenHeight() - initial_height;
+    Vector2 ball_position = {GetScreenWidth()/2.0f, initial_height};
     Vector2 ball_speed = {0.0f, 0.0f};
     Vector2 ball_acceleration = {0.0f, 10000.0f};
 
@@ -23,25 +25,16 @@ int main() {
         float delta_time = GetFrameTime();
         ball_position.x += ball_speed.x * delta_time;
         ball_position.y += ball_speed.y * delta_time;
+
         ball_speed.x += ball_acceleration.x / 2.0f * delta_time;
         ball_speed.y += ball_acceleration.y / 2.0f * delta_time;
 
+
         if (ball_position.y + ball_radius >= GetScreenHeight()) {
             float prev_speed_y = ball_speed.y - ball_acceleration.y / 2.0f * delta_time;
-            float prev_position_y = ball_position.y - prev_speed_y * delta_time;
-            float k = (screen_height - ball_radius - prev_position_y)
-                        / (prev_speed_y * delta_time);
-            /* goal_speed = prev_speed_y                                             */
-            /*             + ball_acceleration.y * delta_time * k                    */
-            /*             + ball_acceleration.y / 2.0f * delta_time;                */
-            /* goal_speed = ball_speed.y - ball_acceleration.y / 2.0f * delta_time   */
-            /*             + ball_acceleration.y * delta_time * k                    */
-            /*             + ball_acceleration.y / 2.0f * delta_time;                */
-            /* goal_speed = ball_speed.y + ball_acceleration.y * delta_time * k      */
-            /* ball_speed.y = prev_speed_y + ball_acceleration.y * delta_time * k; */
-                         /* + ball_acceleration.y / 2.0f * delta_time; */
-            ball_speed.y += ball_acceleration.y * delta_time * k
-                          - ball_acceleration.y * delta_time;
+
+            /* v_f^2 = v_0^2 + 2*a*Δs */
+            ball_speed.y = sqrtf(prev_speed_y * prev_speed_y + 2 * ball_acceleration.y * delta_time * displacement);
             ball_speed.y *= -coeff_restitution;
             ball_position.y = screen_height - ball_radius;
         }
@@ -57,7 +50,7 @@ int main() {
         BeginDrawing();
         {
             ClearBackground(BLACK);
-            DrawCircleV(ball_position, (float)ball_radius, MAROON);
+            DrawCircleV(ball_position, ball_radius, MAROON);
             DrawFPS(10, 10);
         }
         EndDrawing();
