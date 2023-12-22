@@ -11,15 +11,13 @@ int main() {
     /* SetWindowState(FLAG_VSYNC_HINT); */
     SetTargetFPS(60);
 
-    const float gravity = 9.8f;
-
     float ball_radius = 30.0f;
     float coeff_restitution = 1.0f;
     float initial_height = GetScreenHeight()/2.0f;
     float displacement = GetScreenHeight() - initial_height;
     Vector2 ball_position = {GetScreenWidth()/2.0f, initial_height};
     Vector2 ball_speed = {0.0f, 0.0f};
-    Vector2 ball_acceleration = {0.0f, 10000.0f};
+    Vector2 ball_acceleration = {0.0f, 20000.0f};
 
     while (!WindowShouldClose()) {
         float delta_time = GetFrameTime();
@@ -30,14 +28,19 @@ int main() {
         ball_speed.y += ball_acceleration.y / 2.0f * delta_time;
 
 
+        // looks good in the ground, height issues
         if (ball_position.y + ball_radius >= GetScreenHeight()) {
             float prev_speed_y = ball_speed.y - ball_acceleration.y / 2.0f * delta_time;
-
-            /* v_f^2 = v_0^2 + 2*a*Δs */
+            // v_f^2 = v_0^2 + 2*a*Δs
             ball_speed.y = sqrtf(prev_speed_y * prev_speed_y + 2 * ball_acceleration.y * delta_time * displacement);
             ball_speed.y *= -coeff_restitution;
             ball_position.y = screen_height - ball_radius;
         }
+
+        // perfect height, goes through the ground
+        /* if (ball_position.y + ball_radius >= GetScreenWidth() && ball_speed.y > 0) { */
+        /*     ball_speed.y *= -coeff_restitution; */
+        /* } */
 
         if ((ball_position.x - ball_radius <= 0 && ball_speed.x < 0) ||
             (ball_position.x + ball_radius >= GetScreenWidth() && ball_speed.x > 0)) {
