@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 #include "raylib.h"
-#include "physics.h"
 
 int main() {
     int screen_width = 800;

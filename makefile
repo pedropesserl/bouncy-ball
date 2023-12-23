@@ -4,8 +4,8 @@ PROGRAM = bball
 CFLAGS = -Iinclude -Wall -Wextra -g
 LFLAGS = -lm -lraylib
 
-_OBJ = main.o physics.o
-_DEPS = raylib.h physics.h
+_OBJ = main.o
+_DEPS = raylib.h
 
 SDIR = src
 IDIR = include
